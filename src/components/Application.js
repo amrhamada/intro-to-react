@@ -7,33 +7,6 @@ import axios from "axios"
 import {getAppointmentsForDay, getInterview} from "helpers/selectors"
 
 
-// const appointments = [
-//   {
-//     id: 1,
-//     time: "12pm",
-//   },
-//   {
-//     id: 2,
-//     time: "1pm",
-//     interview: {
-//       student: "Lydia Miller-Jones",
-//       interviewer: {
-//         id: 1,
-//         name: "Sylvia Palmer",
-//         avatar: "https://i.imgur.com/LpaY82x.png",
-//       }
-//     }
-//   },
-//   {
-//     id: 3,
-//     time: "3pm",
-//   },
-//   {
-//     id: 4,
-//     time: "4pm",
-//   }
-// ];
-
 
 export default function Application(props) {
   const [state, setState] = useState({
@@ -43,8 +16,20 @@ export default function Application(props) {
     interviewers:{}
   })
 
+  function bookInterview(id, interview) {
+    console.log(id, interview);
+  }
+
+  function save(name, interviewer) {
+    console.log(name, interviewer)
+    const interview = {
+      student: name,
+      interviewer
+    };
+  }
+  
+
   const setDay = day => setState({...state, day});
- console.log("interviewers", state.interviewers)
   useEffect(() => {
     Promise.all([
       axios.get("api/days"),
@@ -56,10 +41,8 @@ export default function Application(props) {
   }, []);
 
   const appointments = getAppointmentsForDay(state,state.day);
-  console.log("appointments",appointments)
   const schedule = appointments.map((appointment) => getInterview(state, appointment.interview));
   
-  console.log("Schedule", schedule)
   return (
     <main className="layout">
       <section className="sidebar">
@@ -89,6 +72,9 @@ export default function Application(props) {
             <Appointment 
               key={apt.id}
               {...apt}
+              interviewers ={state.interviewers}
+              bookInterview={bookInterview}
+              onSave={save}
             />
           )
         })}
