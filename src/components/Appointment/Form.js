@@ -15,7 +15,7 @@ export default function Form(props) {
     reset();
   }
   function onSave() {
-    props.onSave(userName,interviewer)
+    props.onSave(userName,interviewer);
   }
   return (
     <main className="appointment__card appointment__card--create">

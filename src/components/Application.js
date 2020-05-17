@@ -16,16 +16,47 @@ export default function Application(props) {
     interviewers:{}
   })
 
+  function deleteInterview(id) {
+    const appointment = {
+      ...state.appointments[id],
+      interview: null
+    };
+    return axios.delete(`/api/appointments/${id}`)
+    .then(() => {
+      const appointments = {
+        ...state.appointments,
+        [id]: appointment
+      }
+      setState(prev => ({...prev, appointments}))
+    })
+    .catch(err => console.log("ERROR DELETEING", err))
+  }
+
   function bookInterview(id, interview) {
-    console.log(id, interview);
+    const appointment = {
+      ...state.appointments[id],
+      interview: { ...interview }
+    };
+    return axios.put(`/api/appointments/${id}`,{
+      
+      interview:{...appointment.interview}
+    })
+    .then( () => {   
+      const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    };
+    setState(prev => ({...prev, appointments})); 
+    })
+    .catch(err => console.log(err))
   }
 
   function save(name, interviewer) {
-    console.log(name, interviewer)
     const interview = {
       student: name,
       interviewer
     };
+    return interview;
   }
   
 
@@ -74,6 +105,7 @@ export default function Application(props) {
               {...apt}
               interviewers ={state.interviewers}
               bookInterview={bookInterview}
+              deleteInterview = {deleteInterview}
               onSave={save}
             />
           )

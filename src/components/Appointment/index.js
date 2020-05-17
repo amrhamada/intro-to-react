@@ -5,16 +5,35 @@ import Show from "components/Appointment/Show"
 import Empty from "components/Appointment/Empty"
 import Form from "components/Appointment/Form"
 import useVisualMode from "hooks/useVisualMode";
+import Status from "components/Appointment/Status"
+import Confirm from "./Confirm"
 
 export default function Appointment(props) {
-  const {id, time, interview, interviewers, bookInterview, onSave} = props;
-
+  const {id, time, interview, interviewers, bookInterview, deleteInterview, onSave} = props;
   const EMPTY = "EMPTY";
   const SHOW = "SHOW";  
   const CREATE ="CREATE";
+  const SAVING = "SAVING";
+  const DELETE = "DELETE"
+  const CONFIRM = "CONFIRM";
   const { mode, transition, back } = useVisualMode(
     interview ? SHOW : EMPTY
   );
+
+  function onDelete() {
+    transition(DELETE)
+    deleteInterview(id)
+    .then( () => transition(EMPTY))
+    .catch(err => console.log("ERROR", err))
+  }
+
+  function save(userName,interviewer) {
+    const interview = onSave(userName,interviewer);
+    transition(SAVING);
+    bookInterview(id, interview)
+    .then(() =>transition(SHOW))
+
+  }
 
   return  (
     <article className ="appointment">
@@ -23,17 +42,29 @@ export default function Appointment(props) {
       {mode === SHOW && (
         <Show
           student={interview.student}
-          interviewer={interview.interviewer}
+          interviewer={interviewers[interview.interviewer].name}
+          onDelete={() => transition(CONFIRM)}
+          onEdit={ () => transition(CREATE)}
         />
       )}
       {mode === CREATE && 
         <Form
-          // onClick={console.log("save")}
           onCancel={back}
+          id={id}
           interviewers ={interviewers}
-          onSave={onSave}
+          onSave={save}
+          name={interview.student}
+          interviewer={interview.interviewer}
+          
         />
       }
+      {mode === SAVING && <Status message="SAVING" />}
+      {mode === DELETE && <Status message="Deleting" />}
+      {mode === CONFIRM && <Confirm 
+        message="Are you sure you would like to delete?"
+        onConfirm={onDelete}
+        onCancel ={() => transition(SHOW)}
+      />}
 
     </article>
   )
