@@ -10,7 +10,7 @@ import Confirm from "./Confirm"
 import Error from "./Error"
 
 export default function Appointment(props) {
-  const {id, time, interview, interviewers, bookInterview, deleteInterview, onSave} = props;
+  const {id, time, interview, interviewers, bookInterview, cancelInterview, onSave} = props;
   const EMPTY = "EMPTY";
   const SHOW = "SHOW";  
   const CREATE ="CREATE";
@@ -22,10 +22,9 @@ export default function Appointment(props) {
   const { mode, transition, back } = useVisualMode(
     interview ? SHOW : EMPTY
   );
-
   function onDelete() {
     transition(DELETE, true)
-    deleteInterview(id)
+    cancelInterview(id)
     .then( () => transition(EMPTY))
     .catch(() => transition(ERROR_DELETING, true))
   }
@@ -46,7 +45,7 @@ export default function Appointment(props) {
       {mode === SHOW && (
         <Show
           student={interview.student}
-          interviewer={interviewers[interview.interviewer].name}
+          interviewer={interview.interviewer.name}
           onDelete={() => transition(CONFIRM)}
           onEdit={ () => transition(CREATE)}
         />
