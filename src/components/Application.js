@@ -29,7 +29,7 @@ export default function Application(props) {
       }
       setState(prev => ({...prev, appointments}))
     })
-    .catch(err => console.log("ERROR DELETEING", err))
+    // .catch(err => console.log("ERROR DELETEING", err))
   }
 
   function bookInterview(id, interview) {
@@ -48,7 +48,7 @@ export default function Application(props) {
     };
     setState(prev => ({...prev, appointments})); 
     })
-    .catch(err => console.log(err))
+    // .catch(err => console.log(err))
   }
 
   function save(name, interviewer) {
