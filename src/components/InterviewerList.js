@@ -12,6 +12,7 @@ export default function InterviewerList(props) {
   for (const key in interviewers) {
     ints.push(interviewers[key])
   }
+
   return (
     <section className="interviewers">
       <h4 className="interviewers__header text--light">Interviewer</h4>
@@ -21,8 +22,8 @@ export default function InterviewerList(props) {
         key={item.id}
         name={item.name}
         avatar={item.avatar} 
-        selected={item.id === value}
-        onChange={(event) => onChange(item.id)}  />
+        selected={value && item.id === value}
+        onChange={() => onChange(item.id)}  />
     })}</ul>
     </section>
   );

@@ -12,7 +12,8 @@ import Error from "./Error"
 export default function Appointment(props) {
   const {id, time, interview, interviewers, bookInterview, cancelInterview, onSave} = props;
   const EMPTY = "EMPTY";
-  const SHOW = "SHOW";  
+  const SHOW = "SHOW"; 
+  const EDIT = "EDIT" 
   const CREATE ="CREATE";
   const SAVING = "SAVING";
   const DELETE = "DELETE"
@@ -32,14 +33,14 @@ export default function Appointment(props) {
   function save(userName,interviewer) {
     const interview = onSave(userName,interviewer);
     transition(SAVING);
-    bookInterview(id, interview)
+    bookInterview(id, interview,(mode === EDIT && true))
     .then(() =>transition(SHOW))
     .catch(() => transition(ERROR_SAVING, true))
 
   }
 
   return  (
-    <article className ="appointment">
+    <article className ="appointment" data-testid="appointment">
       <Header time={time} />
       {mode === EMPTY && <Empty  onAdd={() => transition(CREATE)}/>}
       {mode === SHOW && (
@@ -47,7 +48,7 @@ export default function Appointment(props) {
           student={interview.student}
           interviewer={interview.interviewer.name}
           onDelete={() => transition(CONFIRM)}
-          onEdit={ () => transition(CREATE)}
+          onEdit={ () => transition(EDIT)}
         />
       )}
       {mode === CREATE && 
@@ -57,7 +58,19 @@ export default function Appointment(props) {
           interviewers ={interviewers}
           onSave={save}
           name={interview && interview.student}
-          interviewer={interview && interview.interviewer}
+          interviewer={interview && interview.interviewer.id}
+          
+        />
+      }
+      {mode === EDIT && 
+        <Form
+          onCancel={back}
+          id={id}
+          interviewers ={interviewers}
+          onSave={save}
+          name={interview && interview.student}
+          interviewer={interview && interview.interviewer.id}
+          edit={true}
           
         />
       }

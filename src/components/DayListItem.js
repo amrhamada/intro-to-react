@@ -24,7 +24,7 @@ export default function DayListItem(props) {
     }
     spots = formatSports();
   return (
-    <li className={dayClass} onClick={setDay}>
+    <li className={dayClass} onClick={setDay} data-testid="day">
       <h2 className="text--regular ">{name}</h2> 
       <h3 className="text--light">{spots}</h3>
     </li>
